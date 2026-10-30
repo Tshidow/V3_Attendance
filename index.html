@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>V3 ATTENDANCE</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="images/hello-icon-152.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="white"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="V3 ATTENDANCE">
+  <meta name="msapplication-TileImage" content="images/hello-icon-144.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+</head>
+<body class="fullscreen"><!-- ============ SCREEN 1: choose teacher ============ -->
+  <section id="screen-setup" class="screen active">
+    <div class="hero">
+      <div class="logo-ring"><img class="logo-img" alt="University logo"></div>
+      <p class="eyebrow">Attendance Manager</p>
+      <h1>University of Swabi</h1>
+    </div>
+
+    <div class="setup-card">
+      <div class="field">
+        <span class="flabel">Class</span>
+        <div class="class-pill">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+          <span id="className"></span>
+        </div>
+        
+      </div>
+
+      <div class="field">
+        <label class="flabel" for="teacherSelect">Teacher</label>
+        <select id="teacherSelect" aria-label="Select teacher"></select>
+      </div>
+
+      <button id="nextBtn" class="btn-main" disabled>
+        <span>Next</span>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+
+      <div class="logo-actions">
+        <button id="logoBtn" class="link" type="button">Change logo</button>
+        <span>·</span>
+        <button id="logoResetBtn" class="link" type="button">Use default</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: attendance ============ -->
+  <section id="screen-attend" class="screen">
+    <header class="appbar">
+      <div class="appbar-row">
+        <button id="backBtn" class="icon-btn" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="appbar-title">
+          <div class="t1" id="hdrClass"></div>
+          <div class="t2" id="hdrTeacher"></div>
+        </div>
+        <img class="logo-img logo-mini" alt="">
+      </div>
+      <label class="date-chip">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+        <input type="date" id="dateInput" aria-label="Attendance date">
+      </label>
+    </header>
+
+    <div class="stats">
+      <div class="stat total"><b id="sTotal">0</b><span>Total</span></div>
+      <div class="stat g"><b id="sG">0</b><span>Present</span></div>
+      <div class="stat y"><b id="sY">0</b><span>Late</span></div>
+      <div class="stat r"><b id="sR">0</b><span>Absent</span></div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-row"><span id="progressText">0 of 0 marked</span><span id="progressPct">0%</span></div>
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    </div>
+
+    <main id="list" class="list"></main>
+
+    <footer class="bottom-bar">
+      <button id="genBtn" class="btn-gen" disabled>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 18h4"/></svg>
+        <span id="genLabel">Generate PDF</span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- ============ loader ============ -->
+  <div id="loader" class="overlay" aria-live="polite">
+    <div class="loader-card">
+      <div class="spinner"></div>
+      <div class="loader-title">Generating PDF</div>
+      <div class="loader-sub">Please wait a moment…</div>
+      <div class="loader-bar"><i></i></div>
+    </div>
+  </div>
+
+  <!-- ============ PDF ready sheet ============ -->
+  <div id="sheetBackdrop" class="sheet-backdrop"></div>
+  <div id="sheet" class="sheet" role="dialog" aria-label="PDF ready">
+    <div class="sheet-handle"></div>
+    <div class="done-badge">
+      <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h2>PDF is ready</h2>
+    <p id="sheetFile" class="sheet-file"></p>
+    <button id="dlBtn" class="btn-main">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      <span>Download PDF</span>
+    </button>
+    <button id="shareBtn" class="btn-ghost" hidden>Share</button>
+    <button id="closeSheetBtn" class="btn-ghost">Close</button>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <input type="file" id="logoInput" accept="image/*" hidden>
+  <script src="js/main.js"></script>
+</body>
+</html>
